@@ -84,6 +84,20 @@ These are the commands subscribed by the client to control the internal state of
   - `<topic_base>/response/<device_name>/voltage_range`
 - **Error Message**: 
   - `<topic_base>/error/disconnected/<device_name>`
+ 
+#### `<topic_base>/cmnd/<device_name>/current_range`
+
+- **Description**: Sets the measurement current range in Amps. The value can range between -20 and +20 mA. Setting this property disables auto-ranging.
+- **Payload**: 
+  ```json
+  {
+    "current_range": <float>
+  }
+ - `"current_range"`: The desired current range in Amps, within the range of -20 to +20 mA.
+- **Response Message**: 
+  - `<topic_base>/response/<device_name>/current_range`
+- **Error Message**: 
+  - `<topic_base>/error/disconnected/<device_name>`
 
 ### Response Messages
 
@@ -116,5 +130,20 @@ These messages are sent by the client in response to command messages.
 > {
 >   "value": 10.0,
 >   "sender_payload": {}
+> }
+> ```
+
+#### `<topic_base>/response/<device_name>/current_range`
+
+- **Description**: Returns the set current range in Amps.
+- **Payload**: 
+  - `"value": <float>` - The current range in Amps.
+  - `"sender_payload": [<corresponding command's message payload>]` - The original command's payload for tracking.
+
+> Example Payload:
+> ```json
+> {
+>   "value": 0.01,
+>   "sender_payload": {"current_range": 0.01}
 > }
 > ```
