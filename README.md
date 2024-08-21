@@ -69,6 +69,21 @@ These are the commands subscribed by the client to control the internal state of
   - `<topic_base>/response/<device_name>/current`
 - **Error Message**: 
   - `<topic_base>/error/disconnected/<device_name>`
+ 
+#### `<topic_base>/cmnd/<device_name>/apply_voltage`
+
+- **Description**: Configures the Keithley 6517B to apply a source voltage. It uses auto-ranging unless a specific voltage range is provided.
+- **Payload**: 
+> ```
+>   {
+>     "voltage_range": <value>
+>   }
+> ```
+  - `"voltage_range"`: Specify the desired voltage range or set to null for auto range. For example, `{"voltage_range": 10}` to set a 10V range, or `{"voltage_range": null}` for auto-ranging.
+- **Response Message**: 
+  - `<topic_base>/response/<device_name>/voltage_range`
+- **Error Message**: 
+  - `<topic_base>/error/disconnected/<device_name>`
 
 ### Response Messages
 
@@ -85,6 +100,21 @@ These messages are sent by the client in response to command messages.
 > ```json
 > {
 >   "value": 3.2e-10,
+>   "sender_payload": {}
+> }
+> ```
+
+#### `<topic_base>/response/<device_name>/voltage_range`
+
+- **Description**: Returns the voltage range in Volts.
+- **Payload**: 
+  - `"value": <float>` - The voltage range in Volts.
+  - `"sender_payload": [<corresponding command's message payload>]` - The original command's payload for tracking.
+
+> Example Payload:
+> ```json
+> {
+>   "value": 10.0,
 >   "sender_payload": {}
 > }
 > ```
