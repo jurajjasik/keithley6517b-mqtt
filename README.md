@@ -37,6 +37,30 @@ The MQTT client is configurable through a YAML configuration file, where you can
 
 The client communicates using MQTT messages structured as `<topic_base>/<action>/<device_name>/<command>`.
 
+List of supported messages:
+
+- Status Messages
+  - `<topic_base>/connected/<device_name>`
+- Error Messages
+  - `<topic_base>/error/disconnected/<device_name>`
+- Command Messages
+  - `<topic_base>/cmnd/<device_name>/apply_voltage`
+  - `<topic_base>/cmnd/<device_name>/auto_range_source`
+  - `<topic_base>/cmnd/<device_name>/current`
+  - `<topic_base>/cmnd/<device_name>/current_range`
+  - `<topic_base>/cmnd/<device_name>/disable_source`
+  - `<topic_base>/cmnd/<device_name>/enable_source`
+  - `<topic_base>/cmnd/<device_name>/config_measure_current`
+  - `<topic_base>/cmnd/<device_name>/reset`
+  - `<topic_base>/cmnd/<device_name>/shutdown`
+  - `<topic_base>/cmnd/<device_name>/source_enabled`
+  - `<topic_base>/cmnd/<device_name>/voltage_range`
+- Response Messages
+  - `<topic_base>/response/<device_name>/current`
+  - `<topic_base>/response/<device_name>/current_range`
+  - `<topic_base>/response/<device_name>/voltage_range`
+  - `<topic_base>/response/<device_name>/source_enabled`
+
 ### Status Messages
 
 Status messages are sent by the client to provide information about the connection status of the device.
