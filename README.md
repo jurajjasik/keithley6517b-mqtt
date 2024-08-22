@@ -62,16 +62,6 @@ These are the commands subscribed by the client to control the internal state of
 - **Payload**: The payload typically includes a `"value"` field that sets the new value or retrieves the current value.
 - **Response**: A corresponding response message or an error message is published based on the outcome of the command. The original command's payload is included for tracking.
 
-#### `<topic_base>/cmnd/<device_name>/current`
-
-- **Description**: Reads the current in Amps, if configured for this reading.
-- **Payload**:
-  - No payload is required for this command. It acts as a getter to retrieve the current.
-- **Response Message**:
-  - `<topic_base>/response/<device_name>/current`
-- **Error Message**:
-  - `<topic_base>/error/disconnected/<device_name>`
-
 #### `<topic_base>/cmnd/<device_name>/apply_voltage`
 
 - **Description**: Configures the Keithley 6517B to apply a source voltage. It uses auto-ranging unless a specific voltage range is provided.
@@ -100,6 +90,16 @@ Example Payload:
   - No payload is required for this command.
 - **Response Message**:
   - `<topic_base>/response/<device_name>/voltage_range`
+- **Error Message**:
+  - `<topic_base>/error/disconnected/<device_name>`
+
+#### `<topic_base>/cmnd/<device_name>/current`
+
+- **Description**: Reads the current in Amps, if configured for this reading.
+- **Payload**:
+  - No payload is required for this command. It acts as a getter to retrieve the current.
+- **Response Message**:
+  - `<topic_base>/response/<device_name>/current`
 - **Error Message**:
   - `<topic_base>/error/disconnected/<device_name>`
 
@@ -143,22 +143,6 @@ These messages are sent by the client in response to command messages.
 > }
 > ```
 
-#### `<topic_base>/response/<device_name>/voltage_range`
-
-- **Description**: Returns the voltage range in Volts.
-- **Payload**:
-  - `"value": <float>` - The voltage range in Volts.
-  - `"sender_payload": [<corresponding command's message payload>]` - The original command's payload for tracking.
-
-> Example Payload:
->
-> ```json
-> {
->   "value": 10.0,
->   "sender_payload": {}
-> }
-> ```
-
 #### `<topic_base>/response/<device_name>/current_range`
 
 - **Description**: Returns the set current range in Amps.
@@ -172,5 +156,21 @@ These messages are sent by the client in response to command messages.
 > {
 >   "value": 0.01,
 >   "sender_payload": {"current_range": 0.01}
+> }
+> ```
+
+#### `<topic_base>/response/<device_name>/voltage_range`
+
+- **Description**: Returns the voltage range in Volts.
+- **Payload**:
+  - `"value": <float>` - The voltage range in Volts.
+  - `"sender_payload": [<corresponding command's message payload>]` - The original command's payload for tracking.
+
+> Example Payload:
+>
+> ```json
+> {
+>   "value": 10.0,
+>   "sender_payload": {}
 > }
 > ```
