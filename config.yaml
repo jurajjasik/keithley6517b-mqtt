@@ -3,3 +3,6 @@ topic_base: "keithley6517b"
 device_name: "Keithley6517B"
 mqtt_broker: "localhost"
 mqtt_port: 1883
+
+current_measurement_interval: 1000
+keithley_visa_resource: "GPIB0::12::INSTR"
