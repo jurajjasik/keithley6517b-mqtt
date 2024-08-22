@@ -65,3 +65,87 @@ class Keithley6517BLogic:
     @check_connection_decorator
     def current(self, value):
         self.device.current = value
+
+    @check_connection_decorator
+    def auto_range_source(self):
+        self.device.auto_range_source()
+
+    @property
+    @check_connection_decorator
+    def voltage_range(self) -> float:
+        return self.device.voltage_range
+
+    @voltage_range.setter
+    @check_connection_decorator
+    def voltage_range(self, value):
+        self.device.voltage_range = value
+
+    @property
+    @check_connection_decorator
+    def current_range(self) -> float:
+        return self.device.current_range
+
+    @current_range.setter
+    @check_connection_decorator
+    def current_range(self, value):
+        self.device.current_range = value
+
+    @property
+    @check_connection_decorator
+    def source_enabled(self) -> bool:
+        return self.device.source_enabled
+
+    @source_enabled.setter
+    @check_connection_decorator
+    def source_enabled(self, value):
+        self.device.source_enabled = value
+
+    @check_connection_decorator
+    def disable_source(self):
+        self.device.disable_source()
+
+    @check_connection_decorator
+    def enable_source(self):
+        self.device.enable_source()
+
+    @check_connection_decorator
+    def measure_current(self, nplc, current, auto_range):
+        return self.device.measure_current(nplc, current, auto_range)
+
+    @check_connection_decorator
+    def reset(self):
+        self.device.reset()
+
+    @check_connection_decorator
+    def shutdown(self):
+        self.device.shutdown()
+
+    @property
+    @check_connection_decorator
+    def source_enabled(self) -> bool:
+        return self.device.source_enabled
+
+    @source_enabled.setter
+    @check_connection_decorator
+    def source_enabled(self, value):
+        self.device.source_enabled = value
+
+    @property
+    @check_connection_decorator
+    def source_voltage(self) -> float:
+        return self.device.source_voltage
+
+    @source_voltage.setter
+    @check_connection_decorator
+    def source_voltage(self, value):
+        self.device.source_voltage = value
+
+    @property
+    @check_connection_decorator
+    def source_voltage_range(self) -> float:
+        return self.device.source_voltage_range
+
+    @source_voltage_range.setter
+    @check_connection_decorator
+    def source_voltage_range(self, value):
+        self.device.source_voltage_range = value
