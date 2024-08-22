@@ -93,6 +93,16 @@ Example Payload:
 - **Error Message**:
   - `<topic_base>/error/disconnected/<device_name>`
 
+#### `<topic_base>/cmnd/<device_name>/auto_range_source`
+
+- **Description**: Enables auto-ranging for the source voltage output.
+- **Payload**:
+  - No payload is required for this command.
+- **Response Message**:
+  - `<topic_base>/response/<device_name>/voltage_range`
+- **Error Message**:
+  - `<topic_base>/error/disconnected/<device_name>`
+
 #### `<topic_base>/cmnd/<device_name>/current_range`
 
 - **Description**: Sets the measurement current range in Amps. The value can range between -20 and +20 mA. Setting this property disables auto-ranging.
@@ -108,6 +118,10 @@ Example Payload:
   - `<topic_base>/response/<device_name>/current_range`
 - **Error Message**:
   - `<topic_base>/error/disconnected/<device_name>`
+
+#### `<topic_base>/cmnd/<device_name>/enable_source`
+
+- **Description**: Enables the source voltage output.
 
 ### Response Messages
 
