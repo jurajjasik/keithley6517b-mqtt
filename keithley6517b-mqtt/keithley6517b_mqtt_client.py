@@ -61,6 +61,9 @@ class Keithley6517BMQTTClientNotConnectedException(Exception):
 class Keithley6517BMQTTClient:
     def __init__(self, config_file):
         self.config = self.load_config(config_file)
+        self.topic_base = self.config["topic_base"]
+        self.device_name = self.config["device_name"]
+
         self.user_stop_event = Event()
 
         self.keithley = Keithley6517BLogic(
@@ -103,7 +106,8 @@ class Keithley6517BMQTTClient:
                 self.config["mqtt_connection_timeout"],
             )
             self.client.socket().setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 2048)
-        except:
+        except Exception as e:
+            logger.warning(f"Could not connect to broker. Error: {e}")
             self.disconnected = True, -1
 
     def on_connect(self, client, userdata, flags, reason_code, properties):
