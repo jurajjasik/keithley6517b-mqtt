@@ -119,9 +119,78 @@ Example Payload:
 - **Error Message**:
   - `<topic_base>/error/disconnected/<device_name>`
 
+#### `<topic_base>/cmnd/<device_name>/disable_source`
+
+- **Description**: Disables the source of current or voltage depending on the configuration of the instrument.
+- **Payload**:
+  - No payload is required for this command.
+- **Response Message**:
+  - `<topic_base>/response/<device_name>/source_enabled`
+- **Error Message**:
+  - `<topic_base>/error/disconnected/<device_name>`
+
 #### `<topic_base>/cmnd/<device_name>/enable_source`
 
-- **Description**: Enables the source voltage output.
+- **Description**: Enables the source of current or voltage depending on the configuration of the instrument.
+- **Payload**:
+  - No payload is required for this command.
+- **Response Message**:
+  - `<topic_base>/response/<device_name>/source_enabled`
+- **Error Message**:
+  - `<topic_base>/error/disconnected/<device_name>`
+
+#### `<topic_base>/cmnd/<device_name>/config_measure_current`
+
+- **Description**: Configures the Keithley 6517B to measure current.
+- **Payload**:
+  - nplc: The number of power line cycles (NPLC) to use for the measurement. The value can range between 0.01 and 10.
+  - current: Upper limit of current in Amps, from -21 mA to 21 mA.
+  - auto_range: Enable or disable auto-ranging for the current measurement.
+
+> Example Payload:
+>
+> ```json
+> {
+>   "nplc": 1,
+>   "current": 0.01,
+>   "auto_range": true
+> }
+> ```
+
+- **Response Message**:
+  - `<topic_base>/response/<device_name>/current_range`
+- **Error Message**:
+  - `<topic_base>/error/disconnected/<device_name>`
+
+#### `<topic_base>/cmnd/<device_name>/reset`
+
+- **Description**: Resets the Keithley 6517B to its default settings.
+- **Payload**:
+  - No payload is required for this command.
+- **Response Message**:
+  - `<topic_base>/connected/<device_name>`
+- **Error Message**:
+  - `<topic_base>/error/disconnected/<device_name>`
+
+#### `<topic_base>/cmnd/<device_name>/shutdown`
+
+- **Description**: Ensures that the current or voltage is turned to zero and disables the output.
+- **Payload**:
+  - No payload is required for this command.
+- **Response Message**:
+  - `<topic_base>/response/<device_name>/source_enabled`
+- **Error Message**:
+  - `<topic_base>/error/disconnected/<device_name>`
+
+#### `<topic_base>/cmnd/<device_name>/source_enabled`
+
+- **Description**: Checks if the source is enabled or disabled.
+- **Payload**:
+  - No payload is required for this command.
+- **Response Message**:
+  - `<topic_base>/response/<device_name>/source_enabled`
+- **Error Message**:
+  - `<topic_base>/error/disconnected/<device_name>`
 
 ### Response Messages
 
@@ -171,6 +240,22 @@ These messages are sent by the client in response to command messages.
 > ```json
 > {
 >   "value": 10.0,
+>   "sender_payload": {}
+> }
+> ```
+
+#### `<topic_base>/response/<device_name>/source_enabled`
+
+- **Description**: Returns the status of the source (enabled/disabled).
+- **Payload**:
+  - `"value": <bool>` - The source status.
+  - `"sender_payload": [<corresponding command's message payload>]` - The original command's payload for tracking.
+
+> Example Payload:
+>
+> ```json
+> {
+>   "value": true,
 >   "sender_payload": {}
 > }
 > ```
