@@ -54,11 +54,13 @@ List of supported messages:
   - `<topic_base>/cmnd/<device_name>/reset`
   - `<topic_base>/cmnd/<device_name>/shutdown`
   - `<topic_base>/cmnd/<device_name>/source_enabled`
-  - `<topic_base>/cmnd/<device_name>/voltage_range`
+  - `<topic_base>/cmnd/<device_name>/source_voltage`
+  - `<topic_base>/cmnd/<device_name>/source_voltage_range`
 - Response Messages
   - `<topic_base>/response/<device_name>/current`
   - `<topic_base>/response/<device_name>/current_range`
-  - `<topic_base>/response/<device_name>/voltage_range`
+  - `<topic_base>/response/<device_name>/source_voltage`
+  - `<topic_base>/response/<device_name>/source_voltage_range`
   - `<topic_base>/response/<device_name>/source_enabled`
 
 ### Status Messages
@@ -90,20 +92,20 @@ These are the commands subscribed by the client to control the internal state of
 
 - **Description**: Configures the Keithley 6517B to apply a source voltage. It uses auto-ranging unless a specific voltage range is provided.
 - **Payload**:
-  - `"voltage_range"`: Specify the desired voltage range or set to null for auto range.
+  - `"source_voltage_range"`: Specify the desired voltage range or set to null for auto range.
 
 Example Payload:
 
 > ```json
 >   {
->     "voltage_range": <value>
+>     "source_voltage_range": <value>
 >   }
 > ```
 
- For example, `{"voltage_range": 10}` to set a 10V range, or `{"voltage_range": null}` for auto-ranging.
+ For example, `{"source_voltage_range": 10}` to set a 10V range, or `{"source_voltage_range": null}` for auto-ranging.
 
 - **Response Message**:
-  - `<topic_base>/response/<device_name>/voltage_range`
+  - `<topic_base>/response/<device_name>/source_voltage_range`
 - **Error Message**:
   - `<topic_base>/error/disconnected/<device_name>`
 
@@ -113,7 +115,7 @@ Example Payload:
 - **Payload**:
   - No payload is required for this command.
 - **Response Message**:
-  - `<topic_base>/response/<device_name>/voltage_range`
+  - `<topic_base>/response/<device_name>/source_voltage_range`
 - **Error Message**:
   - `<topic_base>/error/disconnected/<device_name>`
 
@@ -216,6 +218,44 @@ Example Payload:
 - **Error Message**:
   - `<topic_base>/error/disconnected/<device_name>`
 
+#### `<topic_base>/cmnd/<device_name>/source_voltage`
+
+- **Description**: Set the source voltage in Volts.
+- **Payload**:
+  - `"value"`: The desired voltage in Volts.
+
+> Example Payload:
+>
+> ```json
+> {
+>   "value": 10
+> }
+> ```
+
+- **Response Message**:
+  - `<topic_base>/response/<device_name>/source_voltage`
+- **Error Message**:
+  - `<topic_base>/error/disconnected/<device_name>`
+
+#### `<topic_base>/cmnd/<device_name>/source_voltage_range`
+
+- **Description**: Sets the source voltage range in Volts. The value can range between -1000 and +1000 V. Setting this property disables auto-ranging.
+- **Payload**:
+  - `"value"`: The desired voltage range in Volts, within the range of -1000 to +1000 V.
+
+> Example Payload:
+>
+> ```json
+> {
+>   "value": 10
+> }
+> ```
+
+- **Response Message**:
+  - `<topic_base>/response/<device_name>/source_voltage_range`
+- **Error Message**:
+  - `<topic_base>/error/disconnected/<device_name>`
+
 ### Response Messages
 
 These messages are sent by the client in response to command messages.
@@ -252,22 +292,6 @@ These messages are sent by the client in response to command messages.
 > }
 > ```
 
-#### `<topic_base>/response/<device_name>/voltage_range`
-
-- **Description**: Returns the voltage range in Volts.
-- **Payload**:
-  - `"value": <float>` - The voltage range in Volts.
-  - `"sender_payload": [<corresponding command's message payload>]` - The original command's payload for tracking.
-
-> Example Payload:
->
-> ```json
-> {
->   "value": 10.0,
->   "sender_payload": {}
-> }
-> ```
-
 #### `<topic_base>/response/<device_name>/source_enabled`
 
 - **Description**: Returns the status of the source (enabled/disabled).
@@ -280,6 +304,38 @@ These messages are sent by the client in response to command messages.
 > ```json
 > {
 >   "value": true,
+>   "sender_payload": {}
+> }
+> ```
+
+#### `<topic_base>/response/<device_name>/source_voltage`
+
+- **Description**: Returns the source voltage in Volts.
+- **Payload**:
+  - `"value": <float>` - The source voltage in Volts.
+  - `"sender_payload": [<corresponding command's message payload>]` - The original command's payload for tracking.
+
+> Example Payload:
+>
+> ```json
+> {
+>   "value": 10.0,
+>   "sender_payload": {}
+> }
+> ```
+
+#### `<topic_base>/response/<device_name>/source_voltage_range`
+
+- **Description**: Returns the source voltage range in Volts.
+- **Payload**:
+  - `"value": <float>` - The source voltage range in Volts.
+  - `"sender_payload": [<corresponding command's message payload>]` - The original command's payload for tracking.
+
+> Example Payload:
+>
+> ```json
+> {
+>   "value": 10.0,
 >   "sender_payload": {}
 > }
 > ```
