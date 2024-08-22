@@ -76,6 +76,19 @@ Status messages are sent by the client to provide information about the connecti
 
 Error messages notify about issues such as disconnection.
 
+#### `<topic_base>/error/command/<device_name>`
+
+- **Description**: Notifies about any errors that occur during the operation of the Keithley 6517B device.
+
+Example Payload:
+
+> ```json
+> {
+>   "command": "apply_voltage",
+>   "error_message": "Invalid voltage range: 1oo"
+> }
+> ```
+
 #### `<topic_base>/error/disconnected/<device_name>`
 
 - **Description**: Notifies when the Keithley 6517B device is disconnected.
