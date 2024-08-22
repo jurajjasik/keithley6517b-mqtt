@@ -207,7 +207,7 @@ Example Payload:
 - **Payload**:
   - No payload is required for this command.
 - **Response Message**:
-  - `<topic_base>/connected/<device_name>`
+  - `<topic_base>/response/<device_name>/reset`, payload = {"done"}
 - **Error Message**:
   - `<topic_base>/error/disconnected/<device_name>`
 
