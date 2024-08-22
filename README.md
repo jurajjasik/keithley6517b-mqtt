@@ -50,7 +50,7 @@ List of supported messages:
   - `<topic_base>/cmnd/<device_name>/current_range`
   - `<topic_base>/cmnd/<device_name>/disable_source`
   - `<topic_base>/cmnd/<device_name>/enable_source`
-  - `<topic_base>/cmnd/<device_name>/config_measure_current`
+  - `<topic_base>/cmnd/<device_name>/measure_current`
   - `<topic_base>/cmnd/<device_name>/reset`
   - `<topic_base>/cmnd/<device_name>/shutdown`
   - `<topic_base>/cmnd/<device_name>/source_enabled`
@@ -163,7 +163,7 @@ Example Payload:
 - **Error Message**:
   - `<topic_base>/error/disconnected/<device_name>`
 
-#### `<topic_base>/cmnd/<device_name>/config_measure_current`
+#### `<topic_base>/cmnd/<device_name>/measure_current`
 
 - **Description**: Configures the Keithley 6517B to measure current.
 - **Payload**:
