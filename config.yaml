@@ -3,6 +3,7 @@ topic_base: "keithley6517b"
 device_name: "Keithley6517B"
 mqtt_broker: "test.mosquitto.org"
 mqtt_port: 1883
+mqtt_connection_timeout: 60
 
 current_measurement_interval: 1000
 keithley_visa_resource: "GPIB0::12::INSTR"
