@@ -1,7 +1,7 @@
 client_id: "keithley6517b-8744a469-ea32-4f93-ae69-b6f608e51157"
 topic_base: "keithley6517b"
 device_name: "Keithley6517B"
-mqtt_broker: "test.mosquitto.org"
+mqtt_broker: "localhost"
 mqtt_port: 1883
 mqtt_connection_timeout: 60
 
