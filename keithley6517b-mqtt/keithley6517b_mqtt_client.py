@@ -10,8 +10,7 @@ import paho.mqtt.client as mqtt
 import yaml
 from paho.mqtt.enums import CallbackAPIVersion
 
-from .keithley6517b_logic import Keithley6517BLogic
-from .keithley6517b_mqtt_client_exceptions import KeithleyNotConnectedException
+from .keithley6517b_logic import Keithley6517BLogic, KeithleyDeviceIOError
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -39,9 +38,9 @@ def handle_connection_error(method):
             result = method(self, *args, **kwargs)
             logger.debug(f"Method {method.__name__} returned: {result}")
             return result
-        except KeithleyNotConnectedException as e:
+        except KeithleyDeviceIOError as e:
             command = method.__name__.split("_")[1]  # Extract command from method name
-            logger.error(f"Connection error in method {method.__name__}: {e}")
+            logger.warning(f"Error in method {method.__name__}: {e}")
             self.publish_connection_error(command, str(e))
 
     return wrapper

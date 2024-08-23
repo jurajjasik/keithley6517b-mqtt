@@ -5,8 +5,8 @@ from pymeasure.instruments.keithley import Keithley6517B
 from pyvisa import VisaIOError
 
 
-class KeithleyNotConnectedException(Exception):
-    """Exception raised when the QSource3 peripheral is not connected."""
+class KeithleyDeviceIOError(Exception):
+    """Exception raised when the Keithley peripheral IO error."""
 
     pass
 
@@ -17,9 +17,9 @@ def check_connection_decorator(method):
         self.check_connection()
         try:
             return method(self, *args, **kwargs)
-        except VisaIOError:
+        except VisaIOError as e:
             self.is_connected = False
-            raise KeithleyNotConnectedException("QSource3 peripheral is not connected.")
+            raise KeithleyDeviceIOError(f"Keithley peripheral IO error: {e}")
 
     return wrapper
 
@@ -45,9 +45,9 @@ class Keithley6517BLogic:
             if self.on_connected is not None:
                 self.on_connected()
 
-        except VisaIOError:
+        except VisaIOError as e:
             self._is_connected = False
-            raise KeithleyNotConnectedException("Keithley peripheral is not connected.")
+            raise KeithleyDeviceIOError(f"Keithley peripheral connection error: {e}")
 
     def is_connected(self):
         return self._is_connected
