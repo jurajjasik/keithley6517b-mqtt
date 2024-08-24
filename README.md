@@ -42,7 +42,8 @@ List of supported messages:
 - Status Messages
   - `<topic_base>/connected/<device_name>`
 - Error Messages
-  - `<topic_base>/error/disconnected/<device_name>`
+  - `<topic_base>/error/<device_name>/disconnected`
+  - `<topic_base>/error/<device_name>/command`
 - Command Messages
   - `<topic_base>/cmnd/<device_name>/apply_voltage`
   - `<topic_base>/cmnd/<device_name>/auto_range_source`
@@ -76,7 +77,7 @@ Status messages are sent by the client to provide information about the connecti
 
 Error messages notify about issues such as disconnection.
 
-#### `<topic_base>/error/command/<device_name>`
+#### `<topic_base>/error/<device_name>/command`
 
 - **Description**: Notifies about any errors that occur during the operation of the Keithley 6517B device.
 
@@ -89,7 +90,7 @@ Example Payload:
 > }
 > ```
 
-#### `<topic_base>/error/disconnected/<device_name>`
+#### `<topic_base>/error/<device_name>/disconnected`
 
 - **Description**: Notifies when the Keithley 6517B device is disconnected.
 
@@ -120,7 +121,7 @@ Example Payload:
 - **Response Message**:
   - `<topic_base>/response/<device_name>/source_voltage_range`
 - **Error Message**:
-  - `<topic_base>/error/disconnected/<device_name>`
+  - `<topic_base>/error/<device_name>/disconnected`
 
 #### `<topic_base>/cmnd/<device_name>/auto_range_source`
 
@@ -130,7 +131,7 @@ Example Payload:
 - **Response Message**:
   - `<topic_base>/response/<device_name>/source_voltage_range`
 - **Error Message**:
-  - `<topic_base>/error/disconnected/<device_name>`
+  - `<topic_base>/error/<device_name>/disconnected`
 
 #### `<topic_base>/cmnd/<device_name>/current`
 
@@ -140,7 +141,7 @@ Example Payload:
 - **Response Message**:
   - `<topic_base>/response/<device_name>/current`
 - **Error Message**:
-  - `<topic_base>/error/disconnected/<device_name>`
+  - `<topic_base>/error/<device_name>/disconnected`
 
 #### `<topic_base>/cmnd/<device_name>/current_range`
 
@@ -152,11 +153,12 @@ Example Payload:
   {
     "current_range": <float>
   }
+  ```
 
 - **Response Message**:
   - `<topic_base>/response/<device_name>/current_range`
 - **Error Message**:
-  - `<topic_base>/error/disconnected/<device_name>`
+  - `<topic_base>/error/<device_name>/disconnected`
 
 #### `<topic_base>/cmnd/<device_name>/disable_source`
 
@@ -166,7 +168,7 @@ Example Payload:
 - **Response Message**:
   - `<topic_base>/response/<device_name>/source_enabled`
 - **Error Message**:
-  - `<topic_base>/error/disconnected/<device_name>`
+  - `<topic_base>/error/<device_name>/disconnected`
 
 #### `<topic_base>/cmnd/<device_name>/enable_source`
 
@@ -176,7 +178,7 @@ Example Payload:
 - **Response Message**:
   - `<topic_base>/response/<device_name>/source_enabled`
 - **Error Message**:
-  - `<topic_base>/error/disconnected/<device_name>`
+  - `<topic_base>/error/<device_name>/disconnected`
 
 #### `<topic_base>/cmnd/<device_name>/measure_current`
 
@@ -199,7 +201,7 @@ Example Payload:
 - **Response Message**:
   - `<topic_base>/response/<device_name>/current_range`
 - **Error Message**:
-  - `<topic_base>/error/disconnected/<device_name>`
+  - `<topic_base>/error/<device_name>/disconnected`
 
 #### `<topic_base>/cmnd/<device_name>/reset`
 
@@ -209,7 +211,7 @@ Example Payload:
 - **Response Message**:
   - `<topic_base>/response/<device_name>/reset`, payload = {"done"}
 - **Error Message**:
-  - `<topic_base>/error/disconnected/<device_name>`
+  - `<topic_base>/error/<device_name>/disconnected`
 
 #### `<topic_base>/cmnd/<device_name>/shutdown`
 
@@ -219,7 +221,7 @@ Example Payload:
 - **Response Message**:
   - `<topic_base>/response/<device_name>/source_enabled`
 - **Error Message**:
-  - `<topic_base>/error/disconnected/<device_name>`
+  - `<topic_base>/error/<device_name>/disconnected`
 
 #### `<topic_base>/cmnd/<device_name>/source_enabled`
 
@@ -229,7 +231,7 @@ Example Payload:
 - **Response Message**:
   - `<topic_base>/response/<device_name>/source_enabled`
 - **Error Message**:
-  - `<topic_base>/error/disconnected/<device_name>`
+  - `<topic_base>/error/<device_name>/disconnected`
 
 #### `<topic_base>/cmnd/<device_name>/source_voltage`
 
@@ -248,7 +250,7 @@ Example Payload:
 - **Response Message**:
   - `<topic_base>/response/<device_name>/source_voltage`
 - **Error Message**:
-  - `<topic_base>/error/disconnected/<device_name>`
+  - `<topic_base>/error/<device_name>/disconnected`
 
 #### `<topic_base>/cmnd/<device_name>/source_voltage_range`
 
@@ -267,7 +269,7 @@ Example Payload:
 - **Response Message**:
   - `<topic_base>/response/<device_name>/source_voltage_range`
 - **Error Message**:
-  - `<topic_base>/error/disconnected/<device_name>`
+  - `<topic_base>/error/<device_name>/disconnected`
 
 ### Response Messages
 

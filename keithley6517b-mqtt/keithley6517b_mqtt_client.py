@@ -262,7 +262,7 @@ class Keithley6517BMQTTClient:
 
     def publish_error(self, command, error_message):
         if self.client is not None and self.client.is_connected():
-            topic = f"{self.topic_base}/error/command/{self.device_name}"
+            topic = f"{self.topic_base}/error/{self.device_name}/command"
             payload = json.dumps({"command": command, "error_message": error_message})
             self.client.publish(topic, payload)
 
@@ -270,7 +270,7 @@ class Keithley6517BMQTTClient:
         if self.client is not None and self.client.is_connected():
             error_payload = {"error": error_message, "command": command}
             self.client.publish(
-                f"{self.topic_base}/error/disconnected/{self.device_name}",
+                f"{self.topic_base}/error/{self.device_name}/disconnected",
                 json.dumps(error_payload),
             )
             logger.debug(f"Publish connection error: {error_message}")
