@@ -126,7 +126,12 @@ class Keithley6517BMQTTClient:
 
     def on_message(self, client, userdata, message):
         topic = message.topic
-        payload = json.loads(message.payload)
+
+        try:
+            payload = json.loads(message.payload.decode())
+        except json.JSONDecodeError as e:
+            logger.debug(f"Error decoding message payload: {e}")
+            payload = {}
 
         logger.debug(f"Received message on topic {topic} with payload {payload}")
 
@@ -159,7 +164,9 @@ class Keithley6517BMQTTClient:
 
     @handle_connection_error
     def handle_apply_voltage(self, payload):
-        voltage = payload["source_voltage_range"]
+        voltage = "None"
+        if "value" in payload:
+            voltage = payload["value"]
         if voltage == "None" or is_number(voltage):
             logger.debug(f"Applying voltage {voltage} to the device")
             self.keithley.apply_voltage(voltage)
@@ -268,7 +275,7 @@ class Keithley6517BMQTTClient:
 
     def publish_connection_error(self, command, error_message):
         if self.client is not None and self.client.is_connected():
-            error_payload = {"error": error_message, "command": command}
+            error_payload = json.dumps({"error": error_message, "command": command})
             self.client.publish(
                 f"{self.topic_base}/error/{self.device_name}/disconnected",
                 json.dumps(error_payload),
@@ -277,11 +284,13 @@ class Keithley6517BMQTTClient:
 
     def publish_response(self, command, value, sender_payload):
         if self.client is not None and self.client.is_connected():
-            response_payload = {"value": value, "sender_payload": sender_payload}
+            response_payload = json.dumps(
+                {"value": value, "sender_payload": sender_payload}
+            )
             topic = f"{self.topic_base}/response/{self.device_name}/{command}"
             self.client.publish(
                 topic,
-                json.dumps(response_payload),
+                response_payload,
             )
             logger.debug(f"Publish topic: {topic}, payload: {response_payload}")
 
@@ -326,4 +335,4 @@ class Keithley6517BMQTTClient:
         ):
             self.last_time = time()
             if self.client.is_connected():
-                self.handle_current(payload={"regular": True})
+                self.handle_current(payload=json.dumps({"regular": True}))
