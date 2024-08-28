@@ -8,7 +8,6 @@ from time import time
 
 import paho.mqtt.client as mqtt
 import yaml
-from paho.mqtt.enums import CallbackAPIVersion
 
 from .keithley6517b_logic import Keithley6517BLogic, KeithleyDeviceIOError
 
@@ -73,7 +72,6 @@ class Keithley6517BMQTTClient:
         self.disconnected = (False, None)
 
         self.client = mqtt.Client(
-            callback_api_version=CallbackAPIVersion.VERSION2,
             client_id=self.config["client_id"],
             clean_session=False,
         )
@@ -109,7 +107,7 @@ class Keithley6517BMQTTClient:
             logger.warning(f"Could not connect to broker. Error: {e}")
             self.disconnected = True, -1
 
-    def on_connect(self, client, userdata, flags, reason_code, properties):
+    def on_connect(self, client, userdata, flags, reason_code):
         logger.debug(f"on_connect with reason code {reason_code}")
         if reason_code != 0:
             self.disconnected = True, reason_code
@@ -120,7 +118,7 @@ class Keithley6517BMQTTClient:
         # Subscribe to command topics
         self.client.subscribe(f"{self.topic_base}/cmnd/{self.device_name}/#")
 
-    def on_disconnect(self, client, userdata, flags, reason_code, properties):
+    def on_disconnect(self, client, userdata, flags, reason_code):
         logger.debug(f"on_disconnect with reason code {reason_code}")
         self.disconnected = True, reason_code
 
