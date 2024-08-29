@@ -1,0 +1,12 @@
+[Unit]
+Description=keithley6517b-mqtt Service
+After=multi-user.target
+
+[Service]
+Type=idle
+User=quad
+ExecStart=/usr/bin/python3 /home/quad/keithley6517b-mqtt/keithley6517b_mqtt_main.py /home/quad/keithley6517b-mqtt/config.yaml
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
