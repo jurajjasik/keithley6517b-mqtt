@@ -47,18 +47,34 @@ def check_connection_decorator(method):
 
 
 # decorator that pushes the method to the queue and returns the future result
+# def push_method_to_queue_decorator(method):
+#     @wraps(method)
+#     def wrapper(self, *args, **kwargs):
+#         future = Future()
+#         self.queue.put((method, self, args, kwargs, future))
+#         time.sleep(self.config["current_measurement_interval"])
+#         try:
+#             return future.result(timeout=10)
+#         except TimeoutError:
+#             logger.error(f"Timeout error in method {method.__name__}")
+#             return None
+
+#     return wrapper
+
+
+# decorator that waits for event to be cleared before executing the method
 def push_method_to_queue_decorator(method):
     @wraps(method)
     def wrapper(self, *args, **kwargs):
-        future = Future()
-        self.queue.put((method, self, args, kwargs, future))
-        time.sleep(self.config["current_measurement_interval"])
         try:
-            return future.result(timeout=10)
+            self.event.wait(timeout=10)
+            self.event.set()
+            result = method(self, *args, **kwargs)
+            self.event.clear()
+            return result
         except TimeoutError:
             logger.error(f"Timeout error in method {method.__name__}")
             return None
-
     return wrapper
 
 
