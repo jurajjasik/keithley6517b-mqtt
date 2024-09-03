@@ -12,7 +12,7 @@ from pymeasure.instruments.keithley import Keithley6517B
 from pyvisa import VisaIOError
 
 logger = logging.getLogger(__name__)
-
+logger.setLevel(logging.DEBUG)
 
 class MyKeithley6517B(Keithley6517B):
 
