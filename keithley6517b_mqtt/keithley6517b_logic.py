@@ -37,7 +37,7 @@ def check_connection_decorator(method):
         self.check_connection()
         try:
             return method(self, *args, **kwargs)
-        except (VisaIOError, TimeoutError) as e:
+        except VisaIOError as e:
             self._is_connected = False
             raise KeithleyDeviceIOError(f"Keithley peripheral IO error: {e}")
 
@@ -50,7 +50,11 @@ def push_method_to_queue_decorator(method):
     def wrapper(self, *args, **kwargs):
         future = Future()
         self.queue.put((method, self, args, kwargs, future))
-        return future.result(timeout=1)
+        try:
+            return future.result(timeout=10)
+        except TimeoutError:
+            logger.error(f"Timeout error in method {method.__name__}")
+            return None
 
     return wrapper
 
