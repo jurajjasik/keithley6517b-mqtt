@@ -68,9 +68,9 @@ def push_method_to_queue_decorator(method):
     def wrapper(self, *args, **kwargs):
         try:
             self.event.wait(timeout=10)
-            self.event.set()
-            result = method(self, *args, **kwargs)
             self.event.clear()
+            result = method(self, *args, **kwargs)
+            self.event.set()
             return result
         except TimeoutError:
             logger.error(f"Timeout error in method {method.__name__}")
@@ -111,7 +111,7 @@ class Keithley6517BLogic:
         self.worker_thread = WorkerThread(self.queue)
 
         self.event = Event()
-        self.event.clear()
+        self.event.set()
 
     def start_worker_thread(self):
         # self.worker_thread.start()
