@@ -342,7 +342,7 @@ class Keithley6517BMQTTClient:
 
         if (
             time() - self.last_time
-            >= self.config["current_measurement_interval"] / 1000.0
+            >= self.config["current_measurement_interval"]
         ):
             logger.debug("Time to measure current")
             self.last_time = time()
