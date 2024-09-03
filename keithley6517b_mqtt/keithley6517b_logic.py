@@ -92,6 +92,10 @@ class Keithley6517BLogic:
     def start_worker_thread(self):
         self.worker_thread.start()
 
+    def stop_worker_thread(self):
+        self.worker_thread.stop()
+        self.worker_thread.join()
+
     def check_connection(self):
         if not self.is_connected():
             self.try_connect()
