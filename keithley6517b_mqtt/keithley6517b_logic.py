@@ -110,8 +110,12 @@ class Keithley6517BLogic:
         self.queue = Queue()
         self.worker_thread = WorkerThread(self.queue)
 
+        self.event = Event()
+        self.event.clear()
+
     def start_worker_thread(self):
-        self.worker_thread.start()
+        # self.worker_thread.start()
+        pass
 
     def stop_worker_thread(self):
         self.worker_thread.stop()
