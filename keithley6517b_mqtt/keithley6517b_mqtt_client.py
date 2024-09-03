@@ -345,7 +345,7 @@ class Keithley6517BMQTTClient:
 
             self.client.publish(
                 f"{self.topic_base}/response/{self.device_name}/nplc",
-                json.dumps({"value": self.keithley.nplc}),
+                json.dumps({"value": self.keithley.current_nplc}),
             )
                 
 
