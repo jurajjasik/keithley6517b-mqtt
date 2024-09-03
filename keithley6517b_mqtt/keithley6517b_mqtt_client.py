@@ -89,7 +89,9 @@ class Keithley6517BMQTTClient:
 
         while not self.disconnected[0] and not self.user_stop_event.is_set():
             # self.do_select()
-            self.perform_current_measurement()
+            if time() - self.last_time > self.config["current_measurement_interval"]:
+                self.last_time = time()
+                self.perform_current_measurement()
 
         self.client.loop_stop()
         self.client = None
