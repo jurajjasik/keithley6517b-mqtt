@@ -108,6 +108,7 @@ class Keithley6517BLogic:
             self.device = MyKeithley6517B(
                 self.config["keithley_visa_resource"],
                 asrl={"baud_rate": self.config["keithley_baud_rate"]},
+                timeout=self.config["keithley_timeout"],
             )
 
             self._is_connected = True
