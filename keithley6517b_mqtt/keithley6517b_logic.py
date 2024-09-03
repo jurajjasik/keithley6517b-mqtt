@@ -35,7 +35,7 @@ def check_connection_decorator(method):
         try:
             return method(self, *args, **kwargs)
         except VisaIOError as e:
-            self.is_connected = False
+            self._is_connected = False
             raise KeithleyDeviceIOError(f"Keithley peripheral IO error: {e}")
 
     return wrapper
