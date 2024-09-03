@@ -5,7 +5,8 @@ from keithley6517b_mqtt.keithley6517b_mqtt_client import Keithley6517BMQTTClient
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s:%(lineno)d - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger(__name__)
 
