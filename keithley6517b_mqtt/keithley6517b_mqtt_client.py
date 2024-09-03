@@ -82,6 +82,8 @@ class Keithley6517BMQTTClient:
 
         self.connect_to_broker()
 
+        self.keithley.start_worker_thread()
+
         self.last_time = time()
         self.client.loop_start()
 
@@ -347,10 +349,7 @@ class Keithley6517BMQTTClient:
         self.perform_current_measurement()
 
     def perform_current_measurement(self):
-        if (
-            time() - self.last_time
-            >= self.config["current_measurement_interval"]
-        ):
+        if time() - self.last_time >= self.config["current_measurement_interval"]:
             logger.debug("Time to measure current")
             self.last_time = time()
             if self.client.is_connected() and self.measure_continously:
