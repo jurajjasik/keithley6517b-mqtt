@@ -1,5 +1,6 @@
 import logging
 import threading
+from threading import Event
 import time
 from concurrent.futures import Future
 from ctypes import Array
@@ -39,7 +40,7 @@ def check_connection_decorator(method):
         try:
             return method(self, *args, **kwargs)
         except VisaIOError as e:
-            self._is_connected = False
+            self._is_connected.clear()
             raise KeithleyDeviceIOError(f"Keithley peripheral IO error: {e}")
 
     return wrapper
@@ -86,7 +87,7 @@ class Keithley6517BLogic:
         self.config = config
         self.on_connected = on_connected
 
-        self._is_connected = False
+        self._is_connected = Event()
 
         self.device = None
 
@@ -115,17 +116,17 @@ class Keithley6517BLogic:
                 timeout=self.config["keithley_timeout"],
             )
 
-            self._is_connected = True
+            self._is_connected.set()
             logger.info("Keithley 6517B connected.")
             if self.on_connected is not None:
                 self.on_connected()
 
         except VisaIOError as e:
-            self._is_connected = False
+            self._is_connected.clear()
             raise KeithleyDeviceIOError(f"Keithley peripheral connection error: {e}")
 
     def is_connected(self):
-        return self._is_connected
+        return self._is_connected.is_set()
 
     @push_method_to_queue_decorator
     @check_connection_decorator
