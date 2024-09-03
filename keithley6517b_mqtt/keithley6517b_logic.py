@@ -1,8 +1,25 @@
+import logging
 from ctypes import Array
 from functools import wraps
 
+from pymeasure.instruments import Instrument
 from pymeasure.instruments.keithley import Keithley6517B
 from pyvisa import VisaIOError
+
+logger = logging.getLogger(__name__)
+
+
+class MyKeithley6517B(Keithley6517B):
+
+    current = Instrument.measurement(
+        ":READ?",
+        """ Reads the current in Amps, if configured for this reading.
+        """,
+        get_process=Keithley6517B.extract_value,
+    )
+
+    def __call__(self, *args, **kwds):
+        return super().__call__(*args, **kwds)
 
 
 class KeithleyDeviceIOError(Exception):
@@ -39,9 +56,13 @@ class Keithley6517BLogic:
 
     def try_connect(self):
         try:
-            self.device = Keithley6517B(self.config["keithley_visa_resource"])
+            logger.info(
+                f"Connecting to Keithley 6517B at {self.config['keithley_visa_resource']} ..."
+            )
+            self.device = MyKeithley6517B(self.config["keithley_visa_resource"])
 
             self._is_connected = True
+            logger.info("Keithley 6517B connected.")
             if self.on_connected is not None:
                 self.on_connected()
 
