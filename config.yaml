@@ -7,3 +7,4 @@ mqtt_connection_timeout: 60
 
 current_measurement_interval: 100
 keithley_visa_resource: "ASRL/dev/ttyUSB1::INSTR"
+keithley_baud_rate: 115200
