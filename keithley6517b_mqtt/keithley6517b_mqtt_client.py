@@ -329,7 +329,7 @@ class Keithley6517BMQTTClient:
 
         if (
             time() - self.last_time
-            >= self.config["current_measurement_interval"] / 1000
+            >= self.config["current_measurement_interval"] / 1000.0
         ):
             self.last_time = time()
             if self.client.is_connected():
