@@ -321,6 +321,7 @@ class Keithley6517BMQTTClient:
     def stop(self):
         logger.debug("User stop")
         self.user_stop_event.set()
+        self.keithley.stop_worker_thread()
 
     def do_select(self):
         if self.client is None:
