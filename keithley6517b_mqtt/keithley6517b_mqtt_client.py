@@ -83,9 +83,13 @@ class Keithley6517BMQTTClient:
         self.connect_to_broker()
 
         self.last_time = time()
-        while not self.disconnected[0] and not self.user_stop_event.is_set():
-            self.do_select()
+        self.client.loop_start()
 
+        while not self.disconnected[0] and not self.user_stop_event.is_set():
+            # self.do_select()
+            self.perform_current_measurement()
+
+        self.client.loop_stop()
         self.client = None
 
     def load_config(self, config_file):
@@ -340,6 +344,9 @@ class Keithley6517BMQTTClient:
 
         self.client.loop_misc()
 
+        self.perform_current_measurement()
+
+    def perform_current_measurement(self):
         if (
             time() - self.last_time
             >= self.config["current_measurement_interval"]
