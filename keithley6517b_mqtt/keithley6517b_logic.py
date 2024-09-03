@@ -59,7 +59,10 @@ class Keithley6517BLogic:
             logger.info(
                 f"Connecting to Keithley 6517B at {self.config['keithley_visa_resource']} ..."
             )
-            self.device = MyKeithley6517B(self.config["keithley_visa_resource"])
+            self.device = MyKeithley6517B(
+                self.config["keithley_visa_resource"],
+                asrl={"baud_rate": self.config["keithley_baud_rate"]},
+            )
 
             self._is_connected = True
             logger.info("Keithley 6517B connected.")
