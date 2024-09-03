@@ -63,6 +63,7 @@ class Keithley6517BMQTTClient:
         self.device_name = self.config["device_name"]
 
         self.user_stop_event = Event()
+        self.measure_continously = False
 
         self.keithley = Keithley6517BLogic(
             self.config, on_connected=self.keithley_connected
@@ -145,6 +146,8 @@ class Keithley6517BMQTTClient:
             self.handle_disable_source(payload)
         elif topic.endswith("/enable_source"):
             self.handle_enable_source(payload)
+        elif topic.endswith("/measure_continously"):
+            self.handle_measure_continously(payload)
         elif topic.endswith("/measure_current"):
             self.handle_measure_current(payload)
         elif topic.endswith("/reset"):
@@ -234,6 +237,16 @@ class Keithley6517BMQTTClient:
         self.keithley.shutdown()
         source_enabled = self.keithley.source_enabled
         self.publish_response("source_enabled", source_enabled, payload)
+
+    @handle_connection_error
+    def handle_measure_continously(self, payload):
+        if "value" in payload:
+            measure_continously = bool(payload["value"])
+            logger.debug(f"Setting measure_continously to {measure_continously}")
+            self.measure_continously = measure_continously
+        logger.debug("Getting measure_continously")
+        measure_continously = self.measure_continously
+        self.publish_response("measure_continously", measure_continously, payload)
 
     @handle_connection_error
     def handle_source_enabled(self, payload):
@@ -331,6 +344,7 @@ class Keithley6517BMQTTClient:
             time() - self.last_time
             >= self.config["current_measurement_interval"] / 1000.0
         ):
+            logger.debug("Time to measure current")
             self.last_time = time()
-            if self.client.is_connected():
+            if self.client.is_connected() and self.measure_continously:
                 self.handle_current(payload=json.dumps({"regular": True}))
