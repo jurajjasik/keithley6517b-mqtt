@@ -44,20 +44,12 @@ def check_connection_decorator(method):
     return wrapper
 
 
-def push_method_to_queue_decorator(method):
-    @wraps(method)
-    def wrapper(self, *args, **kwargs):
-        self.queue.put((method, args, kwargs))
-
-    return wrapper
-
-
 # decorator that pushes the method to the queue and returns the future result
 def push_method_to_queue_decorator(method):
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         future = Future()
-        self.queue.put((method, args, kwargs, future))
+        self.queue.put((method, self, args, kwargs, future))
         return future.result(timeout=1)
 
     return wrapper
@@ -72,8 +64,8 @@ class WorkerThread(threading.Thread):
     def run(self):
         while not self._stop_event.is_set():
             try:
-                method, args, kwargs, future = self.queue.get(timeout=1)
-                future.set_result(method(*args, **kwargs))
+                method, that, args, kwargs, future = self.queue.get(timeout=1)
+                future.set_result(method(that, *args, **kwargs))
             except Exception as e:
                 logger.error(f"Error in worker thread: {e}")
 
