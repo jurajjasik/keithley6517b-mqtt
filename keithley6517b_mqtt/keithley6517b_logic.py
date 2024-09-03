@@ -146,16 +146,6 @@ class Keithley6517BLogic:
 
     @property
     @check_connection_decorator
-    def source_enabled(self) -> bool:
-        return self.device.source_enabled
-
-    @source_enabled.setter
-    @check_connection_decorator
-    def source_enabled(self, value):
-        self.device.source_enabled = value
-
-    @property
-    @check_connection_decorator
     def source_voltage(self) -> float:
         return self.device.source_voltage
 
