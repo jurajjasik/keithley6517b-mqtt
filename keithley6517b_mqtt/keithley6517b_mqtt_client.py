@@ -320,35 +320,35 @@ class Keithley6517BMQTTClient:
             self.client.publish(topic, payload, retain=True)
             logger.debug(f"Published keithley connected status to {topic}")
 
-            self.client.publish(
-                f"{self.topic_base}/response/{self.device_name}/measure_continously",
-                json.dumps({"value": self.measure_continously}),
-            )
+            # self.client.publish(
+            #     f"{self.topic_base}/response/{self.device_name}/measure_continously",
+            #     json.dumps({"value": self.measure_continously}),
+            # )
 
-            self.client.publish(
-                f"{self.topic_base}/response/{self.device_name}/source_enabled",
-                json.dumps({"value": self.keithley.source_enabled}),
-            )
+            # self.client.publish(
+            #     f"{self.topic_base}/response/{self.device_name}/source_enabled",
+            #     json.dumps({"value": self.keithley.source_enabled}),
+            # )
 
-            self.client.publish(
-                f"{self.topic_base}/response/{self.device_name}/source_voltage",
-                json.dumps({"value": self.keithley.source_voltage}),
-            )
+            # self.client.publish(
+            #     f"{self.topic_base}/response/{self.device_name}/source_voltage",
+            #     json.dumps({"value": self.keithley.source_voltage}),
+            # )
 
-            self.client.publish(
-                f"{self.topic_base}/response/{self.device_name}/source_voltage_range",
-                json.dumps({"value": self.keithley.source_voltage_range}),
-            )
+            # self.client.publish(
+            #     f"{self.topic_base}/response/{self.device_name}/source_voltage_range",
+            #     json.dumps({"value": self.keithley.source_voltage_range}),
+            # )
 
-            self.client.publish(
-                f"{self.topic_base}/response/{self.device_name}/current_range",
-                json.dumps({"value": self.keithley.current_range}),
-            )
+            # self.client.publish(
+            #     f"{self.topic_base}/response/{self.device_name}/current_range",
+            #     json.dumps({"value": self.keithley.current_range}),
+            # )
 
-            self.client.publish(
-                f"{self.topic_base}/response/{self.device_name}/nplc",
-                json.dumps({"value": self.keithley.current_nplc}),
-            )
+            # self.client.publish(
+            #     f"{self.topic_base}/response/{self.device_name}/nplc",
+            #     json.dumps({"value": self.keithley.current_nplc}),
+            # )
                 
 
     def stop(self):
