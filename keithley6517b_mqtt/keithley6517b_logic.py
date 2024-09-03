@@ -122,7 +122,7 @@ class Keithley6517BLogic:
     @source_enabled.setter
     @check_connection_decorator
     def source_enabled(self, value):
-        self.device.source_enabled = value
+        self.enable_source() if value else self.disable_source()
 
     @check_connection_decorator
     def disable_source(self):
