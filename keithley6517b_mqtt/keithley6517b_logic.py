@@ -136,6 +136,7 @@ class Keithley6517BLogic:
     @push_method_to_queue_decorator
     @check_connection_decorator
     def current(self) -> float:
+        logger.debug("Reading current from Keithley 6517B ...")
         return self.device.current
 
     @current.setter
@@ -194,11 +195,13 @@ class Keithley6517BLogic:
     @push_method_to_queue_decorator
     @check_connection_decorator
     def disable_source(self):
+        logger.debug("Disabling source ...")
         self.device.disable_source()
 
     @push_method_to_queue_decorator
     @check_connection_decorator
     def enable_source(self):
+        logger.debug("Enabling source ...")
         self.device.enable_source()
 
     @push_method_to_queue_decorator
