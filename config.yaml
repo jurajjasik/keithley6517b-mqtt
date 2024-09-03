@@ -5,6 +5,6 @@ mqtt_broker: "localhost"
 mqtt_port: 1883
 mqtt_connection_timeout: 60
 
-current_measurement_interval: 100
+current_measurement_interval: 0.1
 keithley_visa_resource: "ASRL/dev/ttyUSB1::INSTR"
 keithley_baud_rate: 115200
