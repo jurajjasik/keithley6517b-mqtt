@@ -51,6 +51,7 @@ List of supported messages:
   - `<topic_base>/cmnd/<device_name>/current_range`
   - `<topic_base>/cmnd/<device_name>/disable_source`
   - `<topic_base>/cmnd/<device_name>/enable_source`
+  - `<topic_base>/cmnd/<device_name>/measure_continously`
   - `<topic_base>/cmnd/<device_name>/measure_current`
   - `<topic_base>/cmnd/<device_name>/reset`
   - `<topic_base>/cmnd/<device_name>/shutdown`
