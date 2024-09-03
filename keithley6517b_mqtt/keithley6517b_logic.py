@@ -144,6 +144,12 @@ class Keithley6517BLogic:
     def current(self, value):
         self.device.current = value
 
+    @property
+    @push_method_to_queue_decorator
+    @check_connection_decorator
+    def current_nplc(self) -> float:
+        return self.device.current_nplc
+
     @push_method_to_queue_decorator
     @check_connection_decorator
     def auto_range_source(self):
