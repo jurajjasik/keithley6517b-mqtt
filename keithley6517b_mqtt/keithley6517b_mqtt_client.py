@@ -350,8 +350,6 @@ class Keithley6517BMQTTClient:
         self.perform_current_measurement()
 
     def perform_current_measurement(self):
-        if time() - self.last_time >= self.config["current_measurement_interval"]:
-            logger.debug("Time to measure current")
-            self.last_time = time()
-            if self.client.is_connected() and self.measure_continously:
-                self.handle_current(payload=json.dumps({"regular": True}))
+        logger.debug("Time to measure current")
+        if self.client.is_connected() and self.measure_continously:
+            self.handle_current(payload=json.dumps({"regular": True}))

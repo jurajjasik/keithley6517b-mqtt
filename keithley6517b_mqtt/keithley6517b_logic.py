@@ -1,5 +1,6 @@
 import logging
 import threading
+import time
 from concurrent.futures import Future
 from ctypes import Array
 from functools import wraps
@@ -50,6 +51,7 @@ def push_method_to_queue_decorator(method):
     def wrapper(self, *args, **kwargs):
         future = Future()
         self.queue.put((method, self, args, kwargs, future))
+        time.sleep(self.config["current_measurement_interval"])
         try:
             return future.result(timeout=10)
         except TimeoutError:
@@ -70,6 +72,8 @@ class WorkerThread(threading.Thread):
             try:
                 method, that, args, kwargs, future = self.queue.get(timeout=1)
                 future.set_result(method(that, *args, **kwargs))
+            except TimeoutError:
+                pass
             except Exception as e:
                 logger.error(f"Error in worker thread: {e}")
 
