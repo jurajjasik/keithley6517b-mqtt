@@ -1,4 +1,5 @@
 import logging
+import queue
 import threading
 import time
 from concurrent.futures import Future
@@ -54,7 +55,7 @@ def push_method_to_queue_decorator(method):
         future = Future()
         try:
             self.queue.put((method, self, args, kwargs, future), timeout=1)
-        except TimeoutError as e:
+        except (TimeoutError, queue.Full) as e:
             logger.error(
                 f"Timeout error in putting method {method.__name__} to queue: {e}. Returning None."
             )
@@ -81,7 +82,7 @@ class WorkerThread(threading.Thread):
             try:
                 method, that, args, kwargs, future = self.queue.get(timeout=1)
                 future.set_result(method(that, *args, **kwargs))
-            except TimeoutError:
+            except (TimeoutError, queue.Empty):
                 pass
             except Exception as e:
                 logger.error(f"Error in worker thread: {e}")
