@@ -63,7 +63,7 @@ class Keithley6517BMQTTClient:
         self.device_name = self.config["device_name"]
 
         self.user_stop_event = Event()
-        self.measure_continously = False
+        self.measure_continously = Event()
 
         self.keithley = Keithley6517BLogic(
             self.config, on_connected=self.keithley_connected
@@ -177,27 +177,53 @@ class Keithley6517BMQTTClient:
         if "value" in payload:
             voltage = payload["value"]
         if voltage == "None" or is_number(voltage):
+            measure_continously_value = self.measure_continously.is_set()
+            self.measure_continously.clear()
             logger.debug(f"Applying voltage {voltage} to the device")
             self.keithley.apply_voltage(voltage)
             self.publish_response("apply_voltage", voltage, payload)
+            (
+                self.measure_continously.set()
+                if measure_continously_value
+                else self.measure_continously.clear()
+            )
+            self.publish_measure_continously(payload, self.measure_continously.is_set())
         else:
             self.publish_error("apply_voltage", f"Invalid voltage range: {voltage}")
 
     @handle_connection_error
     def handle_auto_range_source(self, payload):
+        measure_continously_value = self.measure_continously.is_set()
+        self.measure_continously.clear()
         logger.debug(f"Setting auto_range_source.")
         self.keithley.auto_range_source()
         rng = self.keithley.voltage_range
         self.publish_response("voltage_range", rng, payload)
+        (
+            self.measure_continously.set()
+            if measure_continously_value
+            else self.measure_continously.clear()
+        )
+        self.publish_measure_continously(payload, self.measure_continously.is_set())
 
     @handle_connection_error
     def handle_current(self, payload):
+        measure_continously_value = self.measure_continously.is_set()
+        self.measure_continously.clear()
         logger.debug("Getting current")
         current = self.keithley.current
         self.publish_response("current", current, payload)
+        (
+            self.measure_continously.set()
+            if measure_continously_value
+            else self.measure_continously.clear()
+        )
+        self.publish_measure_continously(payload, self.measure_continously.is_set())
 
     @handle_connection_error
     def handle_current_range(self, payload):
+        measure_continously_value = self.measure_continously.is_set()
+        self.measure_continously.clear()
         if "value" in payload:
             current_range = payload["value"]
             logger.debug(f"Setting current range to {current_range}")
@@ -205,23 +231,47 @@ class Keithley6517BMQTTClient:
         logger.debug("Getting current range")
         current_range = self.keithley.current_range
         self.publish_response("current_range", current_range, payload)
+        (
+            self.measure_continously.set()
+            if measure_continously_value
+            else self.measure_continously.clear()
+        )
+        self.publish_measure_continously(payload, self.measure_continously.is_set())
 
     @handle_connection_error
     def handle_disable_source(self, payload):
+        measure_continously_value = self.measure_continously.is_set()
+        self.measure_continously.clear()
         logger.debug("Disabling source")
         self.keithley.disable_source()
         enabled = self.keithley.source_enabled
         self.publish_response("source_enabled", enabled, payload)
+        (
+            self.measure_continously.set()
+            if measure_continously_value
+            else self.measure_continously.clear()
+        )
+        self.publish_measure_continously(payload, self.measure_continously.is_set())
 
     @handle_connection_error
     def handle_enable_source(self, payload):
+        measure_continously_value = self.measure_continously.is_set()
+        self.measure_continously.clear()
         logger.debug("Enabling source")
         self.keithley.enable_source()
         enabled = self.keithley.source_enabled
         self.publish_response("source_enabled", enabled, payload)
+        (
+            self.measure_continously.set()
+            if measure_continously_value
+            else self.measure_continously.clear()
+        )
+        self.publish_measure_continously(payload, self.measure_continously.is_set())
 
     @handle_connection_error
     def handle_measure_current(self, payload):
+        measure_continously_value = self.measure_continously.is_set()
+        self.measure_continously.clear()
         if all_in(["nplc", "current", "auto_range"], payload):
             nplc = payload["nplc"]
             current = payload["current"]
@@ -232,32 +282,51 @@ class Keithley6517BMQTTClient:
             self.keithley.measure_current(nplc, current, auto_range)
         rng = self.keithley.current_range
         self.publish_response("current_range", rng, payload)
+        (
+            self.measure_continously.set()
+            if measure_continously_value
+            else self.measure_continously.clear()
+        )
+        self.publish_measure_continously(payload, self.measure_continously.is_set())
 
     @handle_connection_error
     def handle_reset(self, payload):
+        self.measure_continously.clear()
         logger.debug("Resetting the device")
         self.keithley.reset()
         self.publish_response("reset", "done", payload)
+        self.publish_measure_continously(False, payload)
 
     @handle_connection_error
     def handle_shutdown(self, payload):
+        self.measure_continously.clear()
         logger.debug("Shutting down the device")
         self.keithley.shutdown()
         source_enabled = self.keithley.source_enabled
         self.publish_response("source_enabled", source_enabled, payload)
+        self.publish_measure_continously(False, payload)
 
     @handle_connection_error
     def handle_measure_continously(self, payload):
         if "value" in payload:
             measure_continously = bool(payload["value"])
             logger.debug(f"Setting measure_continously to {measure_continously}")
-            self.measure_continously = measure_continously
+            (
+                self.measure_continously.set()
+                if measure_continously
+                else self.measure_continously.clear()
+            )
         logger.debug("Getting measure_continously")
-        measure_continously = self.measure_continously
+        measure_continously = self.measure_continously.is_set()
+        self.publish_measure_continously(payload, measure_continously)
+
+    def publish_measure_continously(self, payload, measure_continously):
         self.publish_response("measure_continously", measure_continously, payload)
 
     @handle_connection_error
     def handle_source_enabled(self, payload):
+        measure_continously_value = self.measure_continously.is_set()
+        self.measure_continously.clear()
         if "value" in payload:
             source_enabled = payload["value"]
             logger.debug(f"Setting source_enabled to {source_enabled}")
@@ -265,9 +334,17 @@ class Keithley6517BMQTTClient:
         logger.debug("Getting source_enabled")
         source_enabled = self.keithley.source_enabled
         self.publish_response("source_enabled", source_enabled, payload)
+        (
+            self.measure_continously.set()
+            if measure_continously_value
+            else self.measure_continously.clear()
+        )
+        self.publish_measure_continously(payload, self.measure_continously.is_set())
 
     @handle_connection_error
     def handle_source_voltage(self, payload):
+        measure_continously_value = self.measure_continously.is_set()
+        self.measure_continously.clear()
         if "value" in payload:
             voltage = payload["value"]
             logger.debug(f"Setting source_voltage to {voltage}")
@@ -275,9 +352,17 @@ class Keithley6517BMQTTClient:
         logger.debug("Getting source_voltage")
         voltage = self.keithley.source_voltage
         self.publish_response("source_voltage", voltage, payload)
+        (
+            self.measure_continously.set()
+            if measure_continously_value
+            else self.measure_continously.clear()
+        )
+        self.publish_measure_continously(payload, self.measure_continously.is_set())
 
     @handle_connection_error
     def handle_source_voltage_range(self, payload):
+        measure_continously_value = self.measure_continously.is_set()
+        self.measure_continously.clear()
         if "value" in payload:
             source_voltage_range = payload["value"]
             logger.debug(f"Setting source_voltage_range to {source_voltage_range}")
@@ -285,6 +370,12 @@ class Keithley6517BMQTTClient:
         logger.debug("Getting source_voltage_range")
         source_voltage_range = self.keithley.source_voltage_range
         self.publish_response("source_voltage_range", source_voltage_range, payload)
+        (
+            self.measure_continously.set()
+            if measure_continously_value
+            else self.measure_continously.clear()
+        )
+        self.publish_measure_continously(payload, self.measure_continously.is_set())
 
     def publish_error(self, command, error_message):
         if self.client is not None and self.client.is_connected():
@@ -353,9 +444,10 @@ class Keithley6517BMQTTClient:
     def stop(self):
         logger.debug("User stop")
         self.user_stop_event.set()
+        self.measure_continously.clear()
         self.keithley.stop_worker_thread()
 
     def perform_current_measurement(self):
         logger.debug("Time to measure current")
-        if self.client.is_connected() and self.measure_continously:
+        if self.client.is_connected() and self.measure_continously.is_set():
             self.handle_current(payload=json.dumps({"regular": True}))
