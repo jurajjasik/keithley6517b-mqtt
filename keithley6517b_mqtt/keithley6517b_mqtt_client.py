@@ -349,38 +349,11 @@ class Keithley6517BMQTTClient:
             #     f"{self.topic_base}/response/{self.device_name}/nplc",
             #     json.dumps({"value": self.keithley.current_nplc}),
             # )
-                
 
     def stop(self):
         logger.debug("User stop")
         self.user_stop_event.set()
         self.keithley.stop_worker_thread()
-
-    def do_select(self):
-        if self.client is None:
-            return
-        sock = self.client.socket()
-        if not sock:
-            logger.debug("Socket is gone")
-            raise Exception("Socket is gone")
-
-        logger.debug(
-            "Selecting for reading"
-            + (" and writing" if self.client.want_write() else "")
-        )
-        r, w, e = select([sock], [sock] if self.client.want_write() else [], [], 1)
-
-        if sock in r:
-            logger.debug("Socket is readable, calling loop_read")
-            self.client.loop_read()
-
-        if sock in w:
-            logger.debug("Socket is writable, calling loop_write")
-            self.client.loop_write()
-
-        self.client.loop_misc()
-
-        self.perform_current_measurement()
 
     def perform_current_measurement(self):
         logger.debug("Time to measure current")
