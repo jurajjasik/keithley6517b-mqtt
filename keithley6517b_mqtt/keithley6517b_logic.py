@@ -1,11 +1,11 @@
 import logging
 import threading
-from threading import Event
 import time
 from concurrent.futures import Future
 from ctypes import Array
 from functools import wraps
 from queue import Queue
+from threading import Event
 
 from pymeasure.instruments import Instrument
 from pymeasure.instruments.keithley import Keithley6517B
@@ -13,6 +13,7 @@ from pyvisa import VisaIOError
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
 
 class MyKeithley6517B(Keithley6517B):
 
@@ -47,34 +48,25 @@ def check_connection_decorator(method):
 
 
 # decorator that pushes the method to the queue and returns the future result
-# def push_method_to_queue_decorator(method):
-#     @wraps(method)
-#     def wrapper(self, *args, **kwargs):
-#         future = Future()
-#         self.queue.put((method, self, args, kwargs, future))
-#         time.sleep(self.config["current_measurement_interval"])
-#         try:
-#             return future.result(timeout=10)
-#         except TimeoutError:
-#             logger.error(f"Timeout error in method {method.__name__}")
-#             return None
-
-#     return wrapper
-
-
-# decorator that waits for event to be cleared before executing the method
 def push_method_to_queue_decorator(method):
     @wraps(method)
     def wrapper(self, *args, **kwargs):
+        future = Future()
         try:
-            self.event.wait(timeout=10)
-            self.event.clear()
-            result = method(self, *args, **kwargs)
-            self.event.set()
-            return result
-        except TimeoutError:
-            logger.error(f"Timeout error in method {method.__name__}")
+            self.queue.put((method, self, args, kwargs, future), timeout=1)
+        except TimeoutError as e:
+            logger.error(
+                f"Timeout error in putting method {method.__name__} to queue: {e}. Returning None."
+            )
             return None
+        try:
+            return future.result(timeout=10)
+        except TimeoutError as e:
+            logger.error(
+                f"Timeout error in waiting for result of method {method.__name__}: {e}. Returning None."
+            )
+            return None
+
     return wrapper
 
 
@@ -107,15 +99,11 @@ class Keithley6517BLogic:
 
         self.device = None
 
-        self.queue = Queue()
+        self.queue = Queue(maxsize=1)
         self.worker_thread = WorkerThread(self.queue)
 
-        self.event = Event()
-        self.event.set()
-
     def start_worker_thread(self):
-        # self.worker_thread.start()
-        pass
+        self.worker_thread.start()
 
     def stop_worker_thread(self):
         self.worker_thread.stop()
